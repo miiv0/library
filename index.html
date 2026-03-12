@@ -2,12 +2,197 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Library</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="script.js" defer></script>
 </head>
 
 <body>
+
+  <div id="app">
+
+    <header>
+      <span class="app-eyebrow">Personal Collection</span>
+      <h1>The <span>Library</span></h1>
+      <p class="subtitle">A quiet place for your books</p>
+    </header>
+
+    <div class="add-btn-wrap">
+      <button id="addBookBtn">
+        <svg class="plus-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <line x1="8" y1="2" x2="8" y2="14" />
+          <line x1="2" y1="8" x2="14" y2="8" />
+        </svg>
+        <span>Add New Book</span>
+      </button>
+    </div>
+
+
+    <div class="shelf-section">
+      <p class="shelf-label">Your Collection</p>
+      <div class="book-count" id="bookCount"><strong>0</strong> books on the shelf</div>
+
+      <div class="shelf-nav">
+
+        <button class="scroll-btn" id="scrollLeft" aria-label="Scroll left">
+          <svg viewBox="0 0 14 14">
+            <polyline points="9 2 4 7 9 12" />
+          </svg>
+        </button>
+
+        <!-- viewport -->
+        <div class="shelf-viewport" id="shelfViewport">
+          <div class="shelf-track" id="shelfTrack">
+            <!-- empty state -->
+            <div class="shelf-empty" id="shelfEmpty">
+              <p>Your shelf awaits its first story…</p>
+            </div>
+
+            <!-- books injected here by JS:
+          <div class="book [read]" data-id="0">
+            <div class="book-spine" style="background:#7b3f3f">
+              <span class="book-title-text">Book Title</span>
+            </div>
+          </div>
+          -->
+          </div>
+        </div>
+
+        <!-- right arrow -->
+        <button class="scroll-btn" id="scrollRight" aria-label="Scroll right">
+          <svg viewBox="0 0 14 14">
+            <polyline points="5 2 10 7 5 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- SHELF BOARD -->
+      <div class="shelf-board"></div>
+    </div>
+
+  </div><!-- /#app -->
+
+
+  <!-- ─── MODAL ───────────────────────────────────────── -->
+  <div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div id="modal">
+
+      <!-- colour strip (left side) -->
+      <div id="bookColorStrip">
+        <span>New Book</span>
+      </div>
+
+      <!-- form -->
+      <div class="modal-body">
+        <div class="modal-header">
+          <div>
+            <h2 id="modalTitle">Add a Book</h2>
+            <p>Fill in the details below</p>
+          </div>
+          <button id="closeModal" aria-label="Close">✕</button>
+        </div>
+
+        <form id="bookForm" autocomplete="off">
+
+          <div class="field">
+            <label for="bookTitle">Title</label>
+            <input type="text" id="bookTitle" name="title" placeholder="e.g. The Name of the Wind" required />
+          </div>
+
+          <div class="field">
+            <label for="bookAuthor">Author</label>
+            <input type="text" id="bookAuthor" name="author" placeholder="e.g. Patrick Rothfuss" required />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="bookPages">Pages</label>
+              <input type="number" id="bookPages" name="pages" placeholder="e.g. 662" min="1" />
+            </div>
+
+            <div class="field">
+              <label for="bookStatus">Read Status</label>
+              <div class="select-wrap">
+                <select id="bookStatus" name="status">
+                  <option value="unread">Not Read</option>
+                  <option value="reading">Reading</option>
+                  <option value="read">Read</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- hidden: colour assigned by JS -->
+          <input type="hidden" id="bookColor" name="color" value="" />
+
+          <button type="submit" id="submitBook">Add to Shelf</button>
+
+        </form>
+      </div>
+
+    </div><!-- /#modal -->
+  </div><!-- /#modalOverlay -->
+
+
+  <!-- your script goes here -->
+  <!-- <script src="library.js"></script> -->
+
+  <!--
+═══════════════════════════════════════════════════════
+  JAVASCRIPT HOOKS
+═══════════════════════════════════════════════════════
+
+  IDs you'll need:
+  ─────────────────────────────────────────────────────
+  #addBookBtn       → click → open modal, randomise strip colour
+  #closeModal       → click → close modal
+  #modalOverlay     → click backdrop → close modal
+  #bookForm         → 'submit' event → read fields, add book, close modal
+  #bookColorStrip   → set style.background to randomColour()
+  #bookColor        → hidden input — store the chosen hex before submit
+  #shelfTrack       → append .book elements here
+  #shelfEmpty       → hide once first book added (display:none)
+  #bookCount        → update innerHTML with count
+  #scrollLeft       → click → scroll shelf left
+  #scrollRight      → click → scroll shelf right
+  #shelfViewport    → the scrollable container
+
+  Book DOM template to append:
+  ─────────────────────────────────────────────────────
+  const el = document.createElement('div');
+  el.classList.add('book');
+  if (book.status === 'read') el.classList.add('read');
+  el.dataset.id = book.id;
+  el.innerHTML = `
+    <div class="book-spine" style="background:${book.color}">
+      <span class="book-title-text">${book.title}</span>
+    </div>`;
+  shelfTrack.appendChild(el);
+
+  Colour palette:
+  ─────────────────────────────────────────────────────
+  const SPINE_COLORS = [
+    '#7b3f3f','#3f5f7b','#4a7b4a','#6b4d7b',
+    '#7b6b3f','#3f6b6b','#7b4a3f','#4f4f7b',
+    '#5c7b5c','#7b5c3f','#3f547b','#6b3f5c'
+  ];
+
+  Modal open/close:
+  ─────────────────────────────────────────────────────
+  overlay.classList.add('open')    // open
+  overlay.classList.remove('open') // close
+
+  Scrolling:
+  ─────────────────────────────────────────────────────
+  const SCROLL_STEP = 200;
+  viewport.scrollBy({ left: SCROLL_STEP, behavior: 'smooth' });
+  viewport.scrollBy({ left: -SCROLL_STEP, behavior: 'smooth' });
+-->
 
 </body>
 

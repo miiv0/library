@@ -1,0 +1,573 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0f0e0c;
+  --surface: #1a1815;
+  --border: #2e2b26;
+  --gold: #c9a84c;
+  --gold-dim: #8a6e30;
+  --cream: #f0e6d0;
+  --text-dim: #7a7060;
+  --shelf: #2a2218;
+  --shelf-top: #3a3020;
+  --shadow: rgba(0, 0, 0, 0.7);
+
+  /* random spine colours – JS can pick from these */
+  --c1: #7b3f3f;
+  --c2: #3f5f7b;
+  --c3: #4a7b4a;
+  --c4: #6b4d7b;
+  --c5: #7b6b3f;
+  --c6: #3f6b6b;
+  --c7: #7b4a3f;
+  --c8: #4f4f7b;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+}
+
+/* ─── NOISE OVERLAY ─────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.5;
+}
+
+/* ─── LAYOUT ─────────────────────────────────────── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 0 0 40px;
+}
+
+/* ─── HEADER ─────────────────────────────────────── */
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 40px 28px;
+  gap: 6px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 2px;
+  background: var(--gold);
+}
+
+.app-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  font-weight: 400;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+h1 span {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+/* ─── ADD BOOK BUTTON ────────────────────────────── */
+.add-btn-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 28px 0 16px;
+}
+
+#addBookBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 1.5px solid var(--gold);
+  color: var(--gold);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+#addBookBtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform: translateX(-101%);
+  transition: transform 0.25s ease;
+  z-index: 0;
+}
+
+#addBookBtn:hover::before {
+  transform: translateX(0);
+}
+
+#addBookBtn:hover {
+  color: var(--bg);
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.25);
+}
+
+#addBookBtn span,
+#addBookBtn svg {
+  position: relative;
+  z-index: 1;
+}
+
+.plus-icon {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* ─── SHELF SECTION ──────────────────────────────── */
+.shelf-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 40px;
+  min-height: 0;
+}
+
+.shelf-label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+/* shelf container with nav arrows */
+.shelf-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scroll-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--gold-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.scroll-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.scroll-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* the actual scrollable shelf */
+.shelf-viewport {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.shelf-track {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  padding: 20px 20px 0;
+  transition: transform 0.35s ease;
+  will-change: transform;
+}
+
+/* ─── SHELF BOARD ────────────────────────────────── */
+.shelf-board {
+  background: var(--shelf);
+  height: 14px;
+  border-top: 3px solid var(--shelf-top);
+  box-shadow: 0 6px 20px var(--shadow);
+  margin: 0 40px;
+  position: relative;
+}
+
+.shelf-board::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%);
+}
+
+/* ─── BOOK SPINE ─────────────────────────────────── */
+.book {
+  flex-shrink: 0;
+  width: 46px;
+  height: 200px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  margin-left: -12px;
+}
+
+.book:first-child {
+  margin-left: 0;
+}
+
+.book:hover {
+  transform: translateY(-12px) scale(1.03);
+  z-index: 10;
+}
+
+.book-spine {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px 0 0 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: -3px 0 8px rgba(0, 0, 0, 0.5), inset 3px 0 6px rgba(255, 255, 255, 0.07);
+}
+
+/* sheen line */
+.book-spine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 6px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+/* read badge */
+.book.read .book-spine::after {
+  content: '✓';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.book-title-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1;
+  padding: 14px 0;
+  max-height: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+
+/* empty state */
+.shelf-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 200px;
+  padding-left: 20px;
+}
+
+.shelf-empty p {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+/* ─── MODAL OVERLAY ──────────────────────────────── */
+#modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+#modalOverlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ─── MODAL CARD ─────────────────────────────────── */
+#modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  width: min(520px, 92vw);
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.3s ease;
+}
+
+#modalOverlay.open #modal {
+  transform: translateY(0) scale(1);
+}
+
+/* coloured book preview strip */
+#bookColorStrip {
+  width: 54px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c1);
+}
+
+#bookColorStrip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 6px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+#bookColorStrip span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* form area */
+.modal-body {
+  flex: 1;
+  padding: 32px 28px 28px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.modal-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.1;
+}
+
+.modal-header p {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+
+#closeModal {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  padding: 2px 4px;
+  transition: color 0.15s;
+}
+
+#closeModal:hover {
+  color: var(--cream);
+}
+
+/* form fields */
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 7px;
+  font-weight: 500;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 10px 13px;
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--gold);
+}
+
+.field input::placeholder {
+  color: var(--text-dim);
+}
+
+/* custom select arrow */
+.select-wrap {
+  position: relative;
+}
+
+.select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--gold-dim);
+  pointer-events: none;
+}
+
+.field select option {
+  background: var(--bg);
+}
+
+/* two-col row */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* submit */
+#submitBook {
+  width: 100%;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 13px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+#submitBook:hover {
+  background: #dbb855;
+}
+
+#submitBook:active {
+  opacity: 0.85;
+}
+
+/* ─── BOOK COUNT ─────────────────────────────────── */
+.book-count {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+}
+
+.book-count strong {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ─── SCROLLBAR HIDE ──────────────────────────────── */
+.shelf-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.shelf-viewport {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
