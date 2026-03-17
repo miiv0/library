@@ -1,15 +1,17 @@
 const myLibrary = [];
 
-function Book(title, author, pages, read) {
+function Book(title, author, pages, read, date, rating) {
     this.title = title;
     this.author = author;
     this.pages = pages;
     this.read = read;
+    this.date = date;
+    this.rating = rating;
     this.id = crypto.randomUUID();
 }
 
-function addBookToLibrary(title, author, pages, read) {
-    const newBook = new Book(title, author, pages, read);
+function addBookToLibrary(title, author, pages, read, date, rating) {
+    const newBook = new Book(title, author, pages, read, date, rating);
     myLibrary.push(newBook);
 }
 
@@ -18,6 +20,9 @@ const modalOverlay = document.getElementById('modalOverlay');
 const closeModal = document.getElementById('closeModal');
 const bookColorStrip = document.getElementById('bookColorStrip');
 const myForm = document.getElementById('bookForm');
+const scrollLeft = document.getElementById('scrollLeft');
+const scrollRight = document.getElementById('scrollRight');
+const shelfViewport = document.getElementById('shelfViewport');
 
 const colors = ['#7b3f3f', '#3f5f7b', '#4a7b4a', '#6b4d7b',
     '#7b6b3f', '#3f6b6b', '#7b4a3f', '#4f4f7b',
@@ -35,6 +40,14 @@ closeModal.addEventListener('click', function () {
     modalOverlay.classList.remove('open');
 });
 
+scrollLeft.addEventListener('click', function () {
+    shelfViewport.scrollBy({ left: -200, behavior: 'smooth' });
+});
+
+scrollRight.addEventListener('click', function () {
+    shelfViewport.scrollBy({ left: 200, behavior: 'smooth' });
+});
+
 myForm.addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -44,7 +57,7 @@ myForm.addEventListener('submit', function (event) {
     const read = document.getElementById('bookStatus').value;
     const color = document.getElementById('bookColor').value;
 
-    addBookToLibrary(title, author, pages, read);
+    addBookToLibrary(title, author, pages, read, date, rating);
 
     const newBook = myLibrary[myLibrary.length - 1];
     const shelfTrack = document.getElementById('shelfTrack');
