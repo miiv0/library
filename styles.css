@@ -6,6 +6,32 @@
   padding: 0;
 }
 
+header {
+  position: relative;
+  /* add this if it isn't already there */
+}
+
+#resetLibrary {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  background: transparent;
+  border: 1px solid #3a3020;
+  color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+#resetLibrary:hover {
+  border-color: #7b3f3f;
+  color: #c47a7a;
+}
+
 :root {
   --bg: #0f0e0c;
   --surface: #1a1815;
