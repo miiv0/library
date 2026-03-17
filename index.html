@@ -45,25 +45,15 @@
           </svg>
         </button>
 
-        <!-- viewport -->
         <div class="shelf-viewport" id="shelfViewport">
           <div class="shelf-track" id="shelfTrack">
-            <!-- empty state -->
             <div class="shelf-empty" id="shelfEmpty">
               <p>Your shelf awaits its first story…</p>
             </div>
-
-            <!-- books injected here by JS:
-          <div class="book [read]" data-id="0">
-            <div class="book-spine" style="background:#7b3f3f">
-              <span class="book-title-text">Book Title</span>
-            </div>
-          </div>
-          -->
           </div>
         </div>
 
-        <!-- right arrow -->
+
         <button class="scroll-btn" id="scrollRight" aria-label="Scroll right">
           <svg viewBox="0 0 14 14">
             <polyline points="5 2 10 7 5 12" />
@@ -71,23 +61,23 @@
         </button>
       </div>
 
-      <!-- SHELF BOARD -->
+
       <div class="shelf-board"></div>
     </div>
 
-  </div><!-- /#app -->
+  </div>
 
 
-  <!-- ─── MODAL ───────────────────────────────────────── -->
+
   <div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div id="modal">
 
-      <!-- colour strip (left side) -->
+
       <div id="bookColorStrip">
         <span>New Book</span>
       </div>
 
-      <!-- form -->
+
       <div class="modal-body">
         <div class="modal-header">
           <div>
@@ -127,7 +117,7 @@
             </div>
           </div>
 
-          <!-- hidden: colour assigned by JS -->
+
           <input type="hidden" id="bookColor" name="color" value="" />
 
           <button type="submit" id="submitBook">Add to Shelf</button>
@@ -135,64 +125,8 @@
         </form>
       </div>
 
-    </div><!-- /#modal -->
-  </div><!-- /#modalOverlay -->
-
-
-  <!-- your script goes here -->
-  <!-- <script src="library.js"></script> -->
-
-  <!--
-═══════════════════════════════════════════════════════
-  JAVASCRIPT HOOKS
-═══════════════════════════════════════════════════════
-
-  IDs you'll need:
-  ─────────────────────────────────────────────────────
-  #addBookBtn       → click → open modal, randomise strip colour
-  #closeModal       → click → close modal
-  #modalOverlay     → click backdrop → close modal
-  #bookForm         → 'submit' event → read fields, add book, close modal
-  #bookColorStrip   → set style.background to randomColour()
-  #bookColor        → hidden input — store the chosen hex before submit
-  #shelfTrack       → append .book elements here
-  #shelfEmpty       → hide once first book added (display:none)
-  #bookCount        → update innerHTML with count
-  #scrollLeft       → click → scroll shelf left
-  #scrollRight      → click → scroll shelf right
-  #shelfViewport    → the scrollable container
-
-  Book DOM template to append:
-  ─────────────────────────────────────────────────────
-  const el = document.createElement('div');
-  el.classList.add('book');
-  if (book.status === 'read') el.classList.add('read');
-  el.dataset.id = book.id;
-  el.innerHTML = `
-    <div class="book-spine" style="background:${book.color}">
-      <span class="book-title-text">${book.title}</span>
-    </div>`;
-  shelfTrack.appendChild(el);
-
-  Colour palette:
-  ─────────────────────────────────────────────────────
-  const SPINE_COLORS = [
-    '#7b3f3f','#3f5f7b','#4a7b4a','#6b4d7b',
-    '#7b6b3f','#3f6b6b','#7b4a3f','#4f4f7b',
-    '#5c7b5c','#7b5c3f','#3f547b','#6b3f5c'
-  ];
-
-  Modal open/close:
-  ─────────────────────────────────────────────────────
-  overlay.classList.add('open')    // open
-  overlay.classList.remove('open') // close
-
-  Scrolling:
-  ─────────────────────────────────────────────────────
-  const SCROLL_STEP = 200;
-  viewport.scrollBy({ left: SCROLL_STEP, behavior: 'smooth' });
-  viewport.scrollBy({ left: -SCROLL_STEP, behavior: 'smooth' });
--->
+    </div>
+  </div>
 
 </body>
 

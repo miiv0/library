@@ -226,7 +226,7 @@ h1 span {
 /* the actual scrollable shelf */
 .shelf-viewport {
   flex: 1;
-  overflow: hidden;
+  overflow-x: auto;
   position: relative;
 }
 
