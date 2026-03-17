@@ -14,6 +14,17 @@ function addBookToLibrary(title, author, pages, read, date) {
     myLibrary.push(newBook);
 }
 
+function openBookDetail(book) {
+    const overlay = document.getElementById('bookDetailOverlay');
+    document.getElementById('bookDetailStrip').style.background = book.color;
+    document.getElementById('detailTitle').textContent = book.title;
+    document.getElementById('detailAuthor').textContent = book.author;
+    document.getElementById('detailPages').textContent = book.pages || '—';
+    document.getElementById('detailStatus').textContent = book.read;
+    document.getElementById('detailDate').textContent = book.date || '—';
+    overlay.classList.add('open');
+}
+
 function renderBook(book) {
     const shelfTrack = document.getElementById('shelfTrack');
     const el = document.createElement('div');
@@ -28,6 +39,10 @@ function renderBook(book) {
             <span class="book-title-text">${book.title}</span>
         </div>
     `;
+
+    el.addEventListener('click', function () {
+        openBookDetail(book);
+    });
 
     shelfTrack.appendChild(el);
 
@@ -109,6 +124,16 @@ myForm.addEventListener('submit', function (event) {
 
     modalOverlay.classList.remove('open');
     myForm.reset();
+});
+
+document.getElementById('closeDetail').addEventListener('click', function () {
+    document.getElementById('bookDetailOverlay').classList.remove('open');
+});
+
+document.getElementById('bookDetailOverlay').addEventListener('click', function (event) {
+    if (event.target === document.getElementById('bookDetailOverlay')) {
+        document.getElementById('bookDetailOverlay').classList.remove('open');
+    }
 });
 
 const scrollLeft = document.getElementById('scrollLeft');

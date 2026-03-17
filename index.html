@@ -12,6 +12,26 @@
   <script src="script.js" defer></script>
 </head>
 
+<div id="bookDetailOverlay">
+  <div id="bookDetail">
+    <div id="bookDetailStrip"></div>
+    <div class="modal-body">
+      <div class="modal-header">
+        <div>
+          <h2 id="detailTitle"></h2>
+          <p id="detailAuthor"></p>
+        </div>
+        <button id="closeDetail" aria-label="Close">✕</button>
+      </div>
+      <div id="detailBody">
+        <p><span class="detail-label">Pages</span><span id="detailPages"></span></p>
+        <p><span class="detail-label">Status</span><span id="detailStatus"></span></p>
+        <p><span class="detail-label">Date Completed</span><span id="detailDate"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <body>
 
   <div id="app">

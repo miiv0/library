@@ -11,6 +11,76 @@ header {
   /* add this if it isn't already there */
 }
 
+#bookDetailOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+#bookDetailOverlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#bookDetail {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  width: min(520px, 92vw);
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.3s ease;
+}
+
+#bookDetailOverlay.open #bookDetail {
+  transform: translateY(0) scale(1);
+}
+
+#bookDetailStrip {
+  width: 54px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+#bookDetailStrip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 6px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+#detailBody p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+#detailBody p:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+
 #resetLibrary {
   position: absolute;
   top: 20px;
@@ -467,7 +537,8 @@ h1 span {
   letter-spacing: 0.05em;
 }
 
-#closeModal {
+#closeModal,
+#closeDetail {
   background: none;
   border: none;
   color: var(--text-dim);
